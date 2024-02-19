@@ -1,0 +1,35 @@
+pipeline {
+  agent any 
+
+  stages {
+      stage ('Check OUT') {
+        steps {
+            git branch: 'master', credentialsId: 'ADirin', url:  'https://github.com/ADirin/HomeAssignmentAmir_Docker.git'
+         
+        }
+
+      }
+     stage ('Build') {
+        steps {
+           bat 'mvn clean install'
+        }
+
+      }
+
+    stage ('Test') {
+        steps {
+         bat 'mvn test '
+        }
+        post {
+            success {
+                junit '**/target/surefire-reports/TEST-*.xml'
+                jacoco(execPattern: '**/target/jacoco.exec')
+            }
+    }
+
+
+      }
+  }
+
+
+}
